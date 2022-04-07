@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 import boto3
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from flask_mysqldb import MySQL
+from s3_helper import list_all_files, download, upload
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -18,9 +19,9 @@ app.config['MYSQL_DB'] = 'pythonlogin'
 
 #s3 credentials
 s3 = boto3.client('s3',
-                  aws_access_key_id="ASIA32QL3DO7GI6BXRRM",
-                  aws_secret_access_key="gtPNKvNyGB7BwP0Er7jfB7FLlD9ZgidNj0PV488y",
-                  aws_session_token="FwoGZXIvYXdzEHYaDKUF6jtCF0EnNXwDriLXASw6g8/AeXX8FUxgbiRDHmMLJEPa6xY0cev8FFpGYf/M9EPScuIcNiHG8TiicbCAV0tdGQKq6GoM2gQARTAGOQPW+9yuXYncFCjj7YEJXsxqWbdQwEanQCI1XXf4XZfWF3oaPm4iOWyPGeONg6fFKH7XKcyxSuVy79k36Rv3FD1c5sm8bW904nbYrVpq5aDLDsWPcel84vwpeJqBkdCrJ4c52fVopdnKH/j0YkEhLt9l9hRXG0ASIKg5mO4CCVqCffB1mZD9mGR8Tm07NLoFOjH66mIZNraLKJekkZIGMi1wmYiexaJJn6wWVjFHJQpn3cXLQ/UQoZnlKI03+lIVSyxusEl1nOB4oyhzpoM="
+                  aws_access_key_id="ASIA32QL3DO7FMLDIZKT",
+                  aws_secret_access_key="R+b/mZe8F/tf2lq9M9PYXpOLa36y7tTdakxgC8Zz",
+                  aws_session_token="FwoGZXIvYXdzEDsaDCE2NoJBb83Jc8NihSLXAfC+A7p32QMSUWWeDAEYIBMmwx479L3nvPdtLocd2+LIVxq/eQI6Dx4AkHc44ZW9NoWSUVYRkvxmwxN+beeGq8Sn3PZ44VC16q8SJnf+nhG0zCQOBA4d8xfB+vInNZ94nUgms6MAZoptGhjfBNWOcyv167ylFPeY0IquWC2oMUl8CupjjXPQr6n9niTQcSBSfKeKBiEpTVYxpWRfUFTozdYjuOXVtYS1c9AhszeNMMYW5UYXVStHb2rafNsAOWqTe8XJUn4zawkP2uKWOMlSa9Mlyj1W3XA5KP7KvJIGMi13ytr33eg+DzdTXorvrm/hcIrMWEWaztnQvK9LoMmvTFlBYpjKIBy+sVT3Lt0="
                   )
 BUCKET_NAME = 'kfcmaibach'
 
@@ -141,11 +142,24 @@ def upload():
             s3.upload_file(
                 Bucket=BUCKET_NAME,
                 Filename=filename,
-                Key= str(session['id']) + '/' + filename
+                Key= str(account['username']) + '/' + filename
             )
             msg = "Upload Done ! "
 
     return render_template('profile.html', account=account)
+
+
+
+@app.route("/download/<filename>", methods=['GET'])
+def download_files(filename):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
+        account = cursor.fetchone()
+        download_bucket = BUCKET_NAME + '/' + str(account['username']) + '/'
+        print(download_bucket)
+        output = download(filename, download_bucket)
+        return send_file(output, as_attachment=True)
 
 
 if __name__ == "__main__":
