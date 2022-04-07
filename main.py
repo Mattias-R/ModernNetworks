@@ -1,9 +1,8 @@
 import MySQLdb.cursors
 import re
 import boto3
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response
 from flask_mysqldb import MySQL
-from s3_helper import list_all_files, download, upload
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -148,19 +147,15 @@ def upload():
 
     return render_template('profile.html', account=account)
 
-
-
-@app.route("/download/<filename>", methods=['GET'])
-def download_files(filename):
-    if request.method == 'GET':
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
-        account = cursor.fetchone()
-        download_bucket = BUCKET_NAME + '/' + str(account['username']) + '/'
-        print(download_bucket)
-        output = download(filename, download_bucket)
-        return send_file(output, as_attachment=True)
-
+@app.route('/blah', methods=['GET'])
+def index():
+    file = s3.get_object(Bucket=BUCKET_NAME, Key='Frage4.pptx')
+    print(file)
+    return Response(
+        file['Body'].read(),
+        mimetype='text/plain',
+        headers={"Content-Disposition": "attachment;filename=test.pdf"}
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
