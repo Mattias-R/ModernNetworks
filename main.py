@@ -149,16 +149,20 @@ def upload():
 
 @app.route('/download', methods=['GET'])
 def index():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
-    account = cursor.fetchone()
-    file = s3.get_object(Bucket=BUCKET_NAME, Key=str(account['username']) +'/Frage4.pptx')
-    print(file)
-    return Response(
-        file['Body'].read(),
-        mimetype='text/plain',
-        headers={"Content-Disposition": "attachment;filename=test.pdf"}
-    )
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
+        account = cursor.fetchone()
+        file = s3.get_object(Bucket=BUCKET_NAME, Key=str(account['username']) +'/Frage4.pptx')
+        print(file)
+        return Response(
+            file['Body'].read(),
+            mimetype='text/plain',
+            headers={"Content-Disposition": "attachment;filename=test.pdf"}
+        )
+    except Exception:
+        error = "please wait a few minutes"
+        return render_template('profile.html', account=account, error = error)
 
 if __name__ == "__main__":
     app.run(debug=True)

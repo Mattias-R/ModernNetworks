@@ -22,29 +22,29 @@
     </table>
 </div>
 
-  <div class="card" style="width:400px">
+<div class="card" style="width:400px">
 
     <div class="card-body ">
-      <form action="/upload" method="post" enctype="multipart/form-data">
-      <p class="card-text">Choose a file to upload it to AWS S3</p>
-        <input type="file" name="file" value="file">
-        <hr>
-      <input type="submit" name="upload" value="Upload" class="btn btn-success">
-      </form>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <p class="card-text">Choose a file to upload it to AWS S3</p>
+            <input type="file" name="file" value="file">
+            <hr>
+            <input type="submit" name="upload" value="Upload" class="btn btn-success">
+        </form>
         {{msg}}
+        </br>
+        <hr>
+        <h3>Download it by clicking on the Button.</h3>
+        <ul>
+            <form action="/download" method="GET" enctype="multipart/form-data">
+                <input type="submit" name="download" value="download" class="btn btn-success">
+            </form>
+        </ul>
+        {{error}}
     </div>
 
-  </div>
-  <br>
 </div>
-<div>
-          <h3>2. List of All files in the bucket:</h3>
-          <p>Download it by clicking on the links.</p>
-          <ul>
-      <form action="/download" method="GET" enctype="multipart/form-data">
-      <input type="submit" name="download" value="download" class="btn btn-success">
-      </form>
-          </ul>
+<br>
 </div>
 
 
