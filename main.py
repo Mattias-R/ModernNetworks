@@ -18,9 +18,9 @@ app.config['MYSQL_DB'] = 'pythonlogin'
 
 #s3 credentials
 s3 = boto3.client('s3',
-                  aws_access_key_id="ASIA32QL3DO7FMLDIZKT",
-                  aws_secret_access_key="R+b/mZe8F/tf2lq9M9PYXpOLa36y7tTdakxgC8Zz",
-                  aws_session_token="FwoGZXIvYXdzEDsaDCE2NoJBb83Jc8NihSLXAfC+A7p32QMSUWWeDAEYIBMmwx479L3nvPdtLocd2+LIVxq/eQI6Dx4AkHc44ZW9NoWSUVYRkvxmwxN+beeGq8Sn3PZ44VC16q8SJnf+nhG0zCQOBA4d8xfB+vInNZ94nUgms6MAZoptGhjfBNWOcyv167ylFPeY0IquWC2oMUl8CupjjXPQr6n9niTQcSBSfKeKBiEpTVYxpWRfUFTozdYjuOXVtYS1c9AhszeNMMYW5UYXVStHb2rafNsAOWqTe8XJUn4zawkP2uKWOMlSa9Mlyj1W3XA5KP7KvJIGMi13ytr33eg+DzdTXorvrm/hcIrMWEWaztnQvK9LoMmvTFlBYpjKIBy+sVT3Lt0="
+                  aws_access_key_id="ASIA32QL3DO7BZHX3MHF",
+                  aws_secret_access_key="HnRphh7g0L1ncJjZfg8zFIligE9GGgkgkSKbaZsR",
+                  aws_session_token="FwoGZXIvYXdzEEkaDPvT8Eei2vwD1DpcACLXAVAxCCfyXEHQXim6g5knc89kI6PTS9lkB+6gXVMk0dLgQw4HO4ha+ynHs3J06kVDiFY1LfBPKHqqYLfq0Do4N/QXOV4XCU13llqPlZZyfQyZmq0Qnas1XwUjNqMy5MNVUDZBmShamOs3G+vgRdD1E9X05QhARYPJSQRc3jDVG3HnjzxSLso5iYLjKOkoGUN7Y4doCJL1LP5KhV9CNqb2X+fQ0hTU5/t2pdG/8OzW4hFx8QilqdJTIF93sjnmOCnPAYyR7LgwJDmuUNHGWZr1APwaiEtJURppKKjDv5IGMi2yeTugU3TyuWJX7ShWd/jgeUVZijU0IO6FYHrEjQn0DWjEYun049410IMZ8+E="
                   )
 BUCKET_NAME = 'kfcmaibach'
 
@@ -145,7 +145,7 @@ def upload():
             )
             msg = "Upload Done ! "
 
-    return render_template('profile.html', account=account)
+    return render_template('profile.html', account=account, msg = msg)
 
 @app.route('/download', methods=['GET'])
 def index():
@@ -153,7 +153,7 @@ def index():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
         account = cursor.fetchone()
-        file = s3.get_object(Bucket=BUCKET_NAME, Key=str(account['username']) +'/Frage4.pptx')
+        file = s3.get_object(Bucket=BUCKET_NAME, Key=str(account['username']) +'/merged/' + str(account['username']) + '.pdf')
         print(file)
         return Response(
             file['Body'].read(),
