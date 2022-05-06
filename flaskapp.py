@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'your secret key'
 
 # Enter your database connection details below
-app.config['MYSQL_HOST'] = 'db1.czyppxeqjiq3.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_HOST'] = 'login-db.czhqdcg5zgth.us-east-1.rds.amazonaws.com'
 app.config['MYSQL_USER'] = 'admin'
 app.config['MYSQL_PASSWORD'] = 'adminadmin'
 app.config['MYSQL_DB'] = 'pythonlogin'
@@ -22,7 +22,7 @@ s3 = boto3.client('s3',
                   aws_secret_access_key="HnRphh7g0L1ncJjZfg8zFIligE9GGgkgkSKbaZsR",
                   aws_session_token="FwoGZXIvYXdzEEkaDPvT8Eei2vwD1DpcACLXAVAxCCfyXEHQXim6g5knc89kI6PTS9lkB+6gXVMk0dLgQw4HO4ha+ynHs3J06kVDiFY1LfBPKHqqYLfq0Do4N/QXOV4XCU13llqPlZZyfQyZmq0Qnas1XwUjNqMy5MNVUDZBmShamOs3G+vgRdD1E9X05QhARYPJSQRc3jDVG3HnjzxSLso5iYLjKOkoGUN7Y4doCJL1LP5KhV9CNqb2X+fQ0hTU5/t2pdG/8OzW4hFx8QilqdJTIF93sjnmOCnPAYyR7LgwJDmuUNHGWZr1APwaiEtJURppKKjDv5IGMi2yeTugU3TyuWJX7ShWd/jgeUVZijU0IO6FYHrEjQn0DWjEYun049410IMZ8+E="
                   )
-BUCKET_NAME = 'kfcmaibach'
+BUCKET_NAME = 'bucket-worker'
 
 # Intialize MySQL
 mysql = MySQL(app)
